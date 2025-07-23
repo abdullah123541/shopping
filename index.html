@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopPro | Online Store</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+
+    .slider-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .slider {
+      width: 100%;
+      height: 450px;
+      margin: auto;
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .slides {
+      display: flex;
+      width: 100%;
+      transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1);
+      height: 100%;
+    }
+
+    .slides img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .navigation {
+      position: absolute;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 10;
+    }
+
+    .nav-btn {
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(5px);
+      border: none;
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 22px;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-btn:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .slider-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .dot.active {
+      background-color: white;
+      transform: scale(1.2);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0.4;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .slides img {
+      animation: fadeIn 1s ease-in-out;
+    }
+  </style>
+
+<header>
+  <div class="logo">ShopPro</div>
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="deals.html">Deals</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="search-cart">
+    <input type="text" placeholder="Search products..." id="searchInput" />
+    <p id="cart-message" style="color: red; font-weight: bold;"></p>
+    <!-- 🛒 Cart link removed -->
+  </div>
+
+  <!-- Cart script removed -->
+  <!-- Auth buttons removed -->
+</header>
+  <main>
+    <section class="hero">
+      <h1>Discover Amazing Products</h1>
+      <p>High quality. Great prices. Fast delivery.</p>
+      <p id="login-message" style="color: red; font-weight: bold;"></p>
+      
+
+      <h2>Featured Products</h2>
+
+      <div class="slider-container">
+        <div class="slider">
+          <div class="slides" id="slides">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Premium Watch">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Wireless Headphones">
+            <img src="https://img.drz.lazcdn.com/static/pk/p/eec6fdfbd388cfc780f44dff87e1e6ba.jpg_2200x2200q80.jpg_.webp" alt="Smartphone">
+            <img src="https://images.unsplash.com/photo-1593642702749-b7d2a804fbcf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Laptop">
+          </div>
+          <div class="navigation">
+            <button class="nav-btn" onclick="prevSlide()">❮</button>
+            <button class="nav-btn" onclick="nextSlide()">❯</button>
+          </div>
+          <div class="slider-dots" id="slider-dots"></div>
+        </div>
+      </div>
+
+      <script>
+        let index = 0;
+        const slides = document.getElementById("slides");
+        const totalSlides = slides.children.length;
+        const dotsContainer = document.getElementById("slider-dots");
+        let slideWidth;
+
+        function createDots() {
+          for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement("div");
+            dot.classList.add("dot");
+            if (i === 0) dot.classList.add("active");
+            dot.addEventListener("click", () => showSlide(i));
+            dotsContainer.appendChild(dot);
+          }
+        }
+
+        function calculateSlideWidth() {
+          slideWidth = slides.parentElement.clientWidth;
+          return slideWidth;
+        }
+
+        function showSlide(i) {
+          const dots = document.querySelectorAll(".dot");
+          dots.forEach(dot => dot.classList.remove("active"));
+
+          index = (i + totalSlides) % totalSlides;
+          dots[index].classList.add("active");
+
+          slides.style.transform = `translateX(-${index * calculateSlideWidth()}px)`;
+        }
+
+        function nextSlide() {
+          showSlide(index + 1);
+        }
+
+        function prevSlide() {
+          showSlide(index - 1);
+        }
+
+        window.addEventListener("load", () => {
+          createDots();
+          calculateSlideWidth();
+        });
+
+        window.addEventListener("resize", () => {
+          calculateSlideWidth();
+          showSlide(index);
+        });
+
+        setInterval(nextSlide, 5000);
+      </script>
+    </section>
+
+    <script>
+      // Removed Start Shopping button redirect
+    </script>
+
+    <section class="featured-products">
+      <h2>Our Products</h2>
+      <div class="product-grid" id="productGrid">
+        <!-- Products loaded by JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 ShopPro. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <!-- Secret Admin Button (invisible) -->
+  <div id="secret-admin" title="Secret Admin Access"></div>
+
+  <script>
+    const secretBtn = document.getElementById("secret-admin");
+    secretBtn.style.position = "fixed";
+    secretBtn.style.bottom = "10px";
+    secretBtn.style.right = "10px";
+    secretBtn.style.width = "20px";
+    secretBtn.style.height = "20px";
+    secretBtn.style.opacity = "0";
+    secretBtn.style.cursor = "pointer";
+    secretBtn.style.zIndex = "9999";
+
+    secretBtn.addEventListener("click", () => {
+      window.location.href = "admin_login.html";
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'a') {
+        window.location.href = "admin_login.html";
+      }
+    });
+  </script>
+
+</body>
+
+</html>
